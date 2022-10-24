@@ -1,0 +1,29 @@
+Start testing: Oct 24 18:06 MSK
+----------------------------------------------------------
+1/1 Testing: test_base
+1/1 Test: test_base
+Command: "/home/stepan/Documents/tp_2022_web_cpp/build/tests/test_base"
+Directory: /home/stepan/Documents/tp_2022_web_cpp/build/tests
+"test_base" start time: Oct 24 18:06 MSK
+Output:
+----------------------------------------------------------
+Running main() from ./googletest/src/gtest_main.cc
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MatrixTest
+[ RUN      ] MatrixTest.returnTest
+[       OK ] MatrixTest.returnTest (0 ms)
+[----------] 1 test from MatrixTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"test_base" end time: Oct 24 18:06 MSK
+"test_base" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 24 18:06 MSK

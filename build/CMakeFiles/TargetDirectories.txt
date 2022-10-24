@@ -1,0 +1,8 @@
+/home/stepan/Documents/tp_2022_web_cpp/build/CMakeFiles/matrix.out.dir
+/home/stepan/Documents/tp_2022_web_cpp/build/CMakeFiles/test.dir
+/home/stepan/Documents/tp_2022_web_cpp/build/CMakeFiles/edit_cache.dir
+/home/stepan/Documents/tp_2022_web_cpp/build/CMakeFiles/rebuild_cache.dir
+/home/stepan/Documents/tp_2022_web_cpp/build/tests/CMakeFiles/test_base.dir
+/home/stepan/Documents/tp_2022_web_cpp/build/tests/CMakeFiles/test.dir
+/home/stepan/Documents/tp_2022_web_cpp/build/tests/CMakeFiles/edit_cache.dir
+/home/stepan/Documents/tp_2022_web_cpp/build/tests/CMakeFiles/rebuild_cache.dir

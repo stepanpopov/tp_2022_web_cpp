@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/matrix.out.dir/src/main.cpp.o CMakeFiles/matrix.out.dir/src/matrix.cpp.o -o matrix.out 
