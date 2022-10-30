@@ -1,20 +1,22 @@
 #pragma once // NOLINT
 
 #include <functional>
-#include <istream>
 #include <limits>
 #include <vector>
 #include <initializer_list>
+#include <iomanip>
+#include <iostream>
 
 namespace tp {
-    static constexpr double kEpsilon = std::numeric_limits<double>::epsilon();
-    static const int outPrecision = 20;
+    static constexpr double K_EPSILON = std::numeric_limits<double>::epsilon();
+    static const int OUT_PRECISION = 20;
+    static const int MATRIX_MAX_SIZE = 10000;
 
     class Matrix {
     public:
-        explicit Matrix(size_t rows = 0, size_t cols = 0);
+        explicit Matrix(size_t rows = 1, size_t cols = 1);
 
-        Matrix(const std::initializer_list<double> &init_list);
+        explicit Matrix(const std::initializer_list<double> &init_list, size_t rows, size_t cols);
 
         Matrix &operator=(const std::initializer_list<double> &init_list);
 
@@ -73,9 +75,8 @@ namespace tp {
         double determinant_of_matrix(const std::vector<double> &matrix,
                                      size_t n) const;
 
-        void sub_matrix(const std::vector<double> &mat,
-                        std::vector<double> &temp,
-                        size_t p, size_t q, size_t n) const;
+        std::vector<double> minor_matrix(const std::vector<double> &mat,
+                                         size_t p, size_t q, size_t n) const;
     };
 
     Matrix operator*(double val, const Matrix &matrix);

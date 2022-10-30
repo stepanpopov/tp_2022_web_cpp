@@ -21,6 +21,17 @@ namespace tp {
         std::string m_msg;
     };
 
+    class InvalidMatrixSize : public MatrixException {
+    public:
+        explicit InvalidMatrixSize(const Matrix &matrix)
+                : MatrixException("Invalid matrix size: rows = " +
+                                  std::to_string(matrix.get_rows()) +
+                                  ", cols = " +
+                                  std::to_string(matrix.get_cols())) {
+        }
+    };
+
+
     class InvalidMatrixStream : public MatrixException {
     public:
         InvalidMatrixStream()

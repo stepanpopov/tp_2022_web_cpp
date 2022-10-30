@@ -1,14 +1,27 @@
 #include "exceptions.h"
-#include <iomanip>
-#include <iostream>
 #include "matrix.h"
 
 namespace tp {
     Matrix::Matrix(size_t rows, size_t cols) : rows(rows), cols(cols),
-                                               elements(rows * cols, 0) {}
+                                               elements(rows * cols, 0) {
+        if (rows == 0 || cols == 0) {
+            throw InvalidMatrixSize(*this);
+        }
 
-    Matrix::Matrix(const std::initializer_list<double> &init_list) : rows(1), cols(init_list.size()),
-                                                                     elements(init_list) {}
+        if (rows * cols >= MATRIX_MAX_SIZE) {
+            throw InvalidMatrixSize(*this);
+        }
+    }
+
+    Matrix::Matrix(const std::initializer_list<double> &init_list, size_t rows, size_t cols) :
+            Matrix(rows, cols) {
+
+        if (init_list.size() > rows * cols) {
+            throw InvalidMatrixSize(*this);
+        }
+
+        elements = init_list;
+    }
 
     Matrix &Matrix::operator=(const std::initializer_list<double> &init_list) {
         rows = 1;
@@ -59,7 +72,7 @@ namespace tp {
 
     std::vector<double> Matrix::get_diagonal(int k) const {
         std::vector<double> diagonal;
-        for (size_t i = k; i < cols; ++i) {
+        for (size_t i = k; i < std::min(cols, rows); ++i) {
             diagonal.push_back((*this)(i - k, i));
         }
         return diagonal;
@@ -73,7 +86,7 @@ namespace tp {
         bool cmp_flag = true;
         for (size_t i = 0; i < this->rows; ++i) {
             for (size_t j = 0; j < this->cols; ++j) {
-                if (std::abs((*this)(i, j) - rhs(i, j)) > kEpsilon) {
+                if (std::abs((*this)(i, j) - rhs(i, j)) > K_EPSILON) {
                     cmp_flag = false;
                     break;
                 }
@@ -170,19 +183,18 @@ namespace tp {
             return (matrix[0] * matrix[rows + 1]) - (matrix[1] * matrix[rows]);
         }
 
-        std::vector<double> temp(rows *rows);
         int sign = 1;
         for (size_t i = 0; i < n; ++i) {
-            sub_matrix(matrix, temp, 0, i, n);
-            determinant += sign * matrix[i] * determinant_of_matrix(temp, n - 1);
+            std::vector<double> minor = minor_matrix(matrix, 0, i, n);
+            determinant += sign * matrix[i] * determinant_of_matrix(minor, n - 1);
             sign = -sign;
         }
         return determinant;
     }
 
-    void Matrix::sub_matrix(const std::vector<double> &mat,
-                            std::vector<double> &temp,
-                            size_t p, size_t q, size_t n) const {
+    std::vector<double> Matrix::minor_matrix(const std::vector<double> &mat,
+                                             size_t p, size_t q, size_t n) const {
+        std::vector<double> temp(rows *rows);
         size_t i = 0, j = 0;
         for (size_t row = 0; row < n; ++row) {
             for (size_t col = 0; col < n; ++col) {
@@ -196,10 +208,11 @@ namespace tp {
                 }
             }
         }
+        return temp;
     }
 
     std::ostream &operator<<(std::ostream &os, const Matrix &matrix) {
-        os << std::setprecision(outPrecision);
+        os << std::setprecision(OUT_PRECISION);
         os << matrix.rows << ' ' << matrix.cols << std::endl;
         for (size_t i = 0; i < matrix.rows; ++i) {
             for (size_t j = 0; j < matrix.cols; ++j) {
