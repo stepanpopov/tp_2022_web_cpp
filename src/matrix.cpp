@@ -15,7 +15,6 @@ namespace tp {
 
     Matrix::Matrix(const std::initializer_list<double> &init_list, size_t rows, size_t cols) :
             Matrix(rows, cols) {
-
         if (init_list.size() > rows * cols) {
             throw InvalidMatrixSize(*this);
         }

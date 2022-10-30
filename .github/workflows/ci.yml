@@ -1,0 +1,25 @@
+on: push
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    container: stepanpopov/rabbit_hole
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./linters.sh
+
+  build:
+    runs-on: ubuntu-latest
+    container: stepanpopov/rabbit_hole
+    needs: [check]
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./build
+
+  test:
+    runs-on: ubuntu-latest
+    container: stepanpopov/rabbit_hole
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./test.sh
