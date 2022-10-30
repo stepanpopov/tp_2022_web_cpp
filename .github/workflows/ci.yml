@@ -6,7 +6,7 @@ jobs:
     container: stepanpopov/rabbit_hole
     steps:
       - uses: actions/checkout@v2
-      - run: ./linters.sh
+      - run: bash linters.sh
 
   build:
     runs-on: ubuntu-latest
@@ -14,7 +14,7 @@ jobs:
     needs: [check]
     steps:
       - uses: actions/checkout@v2
-      - run: ./build
+      - run: bash build.sh
 
   test:
     runs-on: ubuntu-latest
@@ -22,4 +22,4 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v2
-      - run: ./test.sh
+      - run: bash test.sh
