@@ -22,4 +22,6 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v2
-      - run: bash test.sh
+      - run: |
+          bash build.sh
+          bash test.sh

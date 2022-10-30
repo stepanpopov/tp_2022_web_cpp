@@ -1,4 +1,5 @@
 cd ./build && ctest -V -R
 
-# lcov -t "tests/tests_logic" -o coverage.info -c -d logic/
+# echo $PWD
+# lcov -t "tests/test_base" -o coverage.info -c -d matrix
 # genhtml -o report coverage.info
