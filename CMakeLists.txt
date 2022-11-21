@@ -9,7 +9,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra \
                                          -fno-sanitize-recover=all \
                                          -fsanitize-undefined-trap-on-error")
 
-add_executable(matrix.out ./src/main.cpp ./src/matrix.cpp)
+add_executable(matrix.out ./src/main.cpp src/set.cpp)
 
 enable_testing()
 add_subdirectory(tests)

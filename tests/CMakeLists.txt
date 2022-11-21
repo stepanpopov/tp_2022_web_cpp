@@ -7,7 +7,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
 
 find_package(GTest REQUIRED)
 
-add_executable(${PROJECT_NAME} test.cpp ../src/matrix.cpp)
+add_executable(${PROJECT_NAME} test.cpp ../src/set.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${GTEST_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} GTest::gtest_main)

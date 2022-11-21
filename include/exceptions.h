@@ -3,7 +3,7 @@
 #include <exception>
 #include <string>
 
-#include "matrix.h"
+#include "set.h"
 
 namespace tp {
     class MatrixException : public std::exception {

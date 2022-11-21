@@ -2,7 +2,7 @@
 
 #include "gtest/gtest.h"
 
-#include "matrix.h"
+#include "set.h"
 
 TEST(MatrixTest, returnTest) {
     tp::Matrix matr(4,5);
