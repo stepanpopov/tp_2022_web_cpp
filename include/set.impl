@@ -1,172 +1,219 @@
 #include "set.h"
 
 namespace tp {
-    template<class T>
-    set<T>::set() : root(nullptr),
-                    begin(nullptr),
-                    last(nullptr),
-                    size(0) {}
+template<class T>
+set<T>::set() : root(nullptr),
+                begin(nullptr),
+                last(nullptr),
+                size(0) {}
 
-    template<class T>
-    set<T>::set(const set<T> &s) {
-        (*this) = s;
-    }
+template<class T>
+set<T>::set(const set <T> &s) {
+    (*this) = s;
+}
 
-    template<class T>
-    set<T> &set<T>::operator=(const set<T> &s) {
+template<class T>
+set <T> &set<T>::operator=(const set <T> &s) {
+    root = nullptr;
+    begin = nullptr;
+    last = nullptr;
+    node_visit_and_copy(root, s.root);
+    size = s.size;
 
+    return *this;
+}
 
-        return *this;
-    }
-
-    template<class T>
-    set<T>::~set() {
-
-    }
-
+template<class T>
+set<T>::~set() {
+    node_visit_and_delete(root);
+}
 
 // SET METHODS
-    template<class T>
-    void set<T>::insert(const T &key) {
-        node_insert(root, key);
+template<class T>
+void set<T>::insert(const T &key) {
+    if (!node_find(root, key)) {
+        root = node_insert(root, key);
+        size++;
     }
+}
 
-    template<class T>
-    void set<T>::erase(const T &key) {
-        node_remove(root, key);
+template<class T>
+void set<T>::erase(const T &key) {
+    if (node_find(root, key)) {
+        root = node_remove(root, key);
+        size--;
     }
+}
 
-    template<class T>
-    size_t set<T>::get_size() const {
-        return size;
-    }
+template<class T>
+size_t set<T>::get_size() const {
+    return size;
+}
 
-    template<class T>
-    bool set<T>::empty() const {
-        return (size == 0);
-    }
+template<class T>
+bool set<T>::empty() const {
+    return (size == 0);
+}
 
 // AVL TREE
 
-    template<class T>
-    node<T> *set<T>::node_insert(node<T> *n, const T &key) {
-        if (n == nullptr) {
-            return new node<T>(key);
-        }
+template<class T>
+void set<T>::node_visit_and_delete(node <T> *n) {
+    if (n == nullptr) {
+        return;
+    }
+    node_visit_and_delete(n->left);
+    node_visit_and_delete(n->right);
 
-        if (n->key > key) {
-            node_insert(n->left, key);
-        } else if (n->key < key) {
-            node_insert(n->right, key);
-        }
+    delete n;
+}
 
-        return node_balance(n);
+template<class T>
+void set<T>::node_visit_and_copy(node <T> *&n, node <T> *copy_node) {
+    if (copy_node == nullptr) {
+        return;
+    }
+    n = new node<T>(copy_node->key);
+
+    node_visit_and_copy(n->left, copy_node->left);
+    node_visit_and_copy(n->right, copy_node->right);
+}
+
+template<class T>
+bool set<T>::node_find(node <T> *n, const T &key) const {
+    if (n == nullptr) {
+        return false;
+    }
+    if (n->key == key) {
+        return true;
     }
 
-    template<class T>
-    node<T> *set<T>::node_find_min(node<T> *n) {  // node_remove helper
-        if (n->left == nullptr) {
-            return n;
-        }
-        node_find_min(n->left);
+    if (n->key > key) {
+        return node_find(n->left, key);
+    } else {
+        return node_find(n->right, key);
+    }
+}
+
+template<class T>
+node <T> *set<T>::node_insert(node <T> *n, const T &key) {
+    if (n == nullptr) {
+        return new node<T>(key);
     }
 
-    template<class T>
-    node<T> *set<T>::node_without_min(node<T> *n) {  // node_remove helper
-        if (n->left == nullptr) {
-            return n->right;
-        }
-        n->left = node_without_min(n->left);
-        return node_balance(n);
+    if (n->key > key) {
+        n->left = node_insert(n->left, key);
+    } else if (n->key < key) {
+        n->right = node_insert(n->right, key);
     }
 
-    template<class T>
-    node<T> *set<T>::node_remove(node<T> *n, const T &key) {
-        if (n == nullptr) {
-            return nullptr;
-        }
-        if (n->key > key) {
-            node_remove(n->left, key);
-        } else if (n->key < key) {
-            node_remove(n->right, key);
-        } else if (n->key == key) {
-            node<T> *node_left = n->left;
-            node<T> *node_right = n->right;
-            delete n;
+    return node_balance(n);
+}
 
-            if (node_right == nullptr) {
-                return node_left;
-            }
-
-            node<T> *node_min = node_find_min(node_right);
-            node_min->left = node_left;
-            node_min->right = node_without_min(node_right);
-
-            return node_balance(node_min);
-        }
-
-        return node_balance(n);
+template<class T>
+node <T> *set<T>::node_find_min(node <T> *n) const {  // node_remove helper
+    if (n->left == nullptr) {
+        return n;
     }
+    return node_find_min(n->left);
+}
+
+template<class T>
+node <T> *set<T>::node_without_min(node <T> *n) {  // node_remove helper
+    if (n->left == nullptr) {
+        return n->right;
+    }
+    n->left = node_without_min(n->left);
+    return node_balance(n);
+}
+
+template<class T>
+node <T> *set<T>::node_remove(node <T> *n, const T &key) {
+    if (n == nullptr) {
+        return nullptr;
+    }
+    if (n->key > key) {
+        n->left = node_remove(n->left, key);
+    } else if (n->key < key) {
+        n->right = node_remove(n->right, key);
+    } else if (n->key == key) {
+        node<T> *node_left = n->left;
+        node<T> *node_right = n->right;
+        delete n;
+
+        if (node_right == nullptr) {
+            return node_left;
+        }
+
+        node<T> *node_min = node_find_min(node_right);
+        node_min->right = node_without_min(node_right);
+        node_min->left = node_left;
+
+        return node_balance(node_min);
+    }
+
+    return node_balance(n);
+}
 
 // AVL TREE BALANCE
 
-    template<class T>
-    size_t set<T>::node_height(node<T> *n) {
-        if (n != nullptr) {
-            return n->height;
-        } else {
-            return 0;
-        }
+template<class T>
+size_t set<T>::node_height(node <T> *n) const {
+    if (n != nullptr) {
+        return n->height;
+    } else {
+        return 0;
     }
+}
 
-    template<class T>
-    size_t set<T>::node_balance_factor(node<T> *n) {
-        return node_height(n->right) - node_height(n->left);
+template<class T>
+int set<T>::node_balance_factor(node <T> *n) const {
+    return node_height(n->right) - node_height(n->left);
+}
+
+template<class T>
+void set<T>::node_fix_height(node <T> *n) {
+    size_t height_left = node_height(n->left);
+    size_t height_right = node_height(n->right);
+
+    n->height = std::max(height_left, height_right) + 1;
+}
+
+template<class T>
+node <T> *set<T>::node_rotate_right(node <T> *n) {
+    node<T> *q = n->left;
+    n->left = q->right;
+    q->right = n;
+    node_fix_height(n);
+    node_fix_height(q);
+    return q;
+}
+
+template<class T>
+node <T> *set<T>::node_rotate_left(node <T> *n) {
+    node<T> *p = n->right;
+    n->right = p->left;
+    p->left = n;
+    node_fix_height(n);
+    node_fix_height(p);
+    return p;
+}
+
+template<class T>
+node <T> *set<T>::node_balance(node <T> *n) {
+    node_fix_height(n);
+    if (node_balance_factor(n) == 2 && node_balance_factor(n->right) < 0) {
+        n->right = node_rotate_right(n->right);
+        return node_rotate_left(n);
+    } else if (node_balance_factor(n) == 2 && node_balance_factor(n->right) >= 0) {
+        return node_rotate_left(n);
+    } else if (node_balance_factor(n) == -2 && node_balance_factor(n->left) > 0) {
+        n->left = node_rotate_left(n->left);
+        return node_rotate_right(n);
+    } else if (node_balance_factor(n) == -2 && node_balance_factor(n->left) <= 0) {
+        return node_rotate_right(n);
     }
-
-    template<class T>
-    void set<T>::node_fix_height(node<T> *n) {
-        node<T> *height_left = node_height(n->left);
-        node<T> *height_right = node_height(n->right);
-
-        n->height = std::min(height_left, height_right) + 1;
-    }
-
-    template<class T>
-    node<T> *set<T>::node_rotate_right(node<T> *n) {
-        node<T> *q = n->left;
-        n->left = q->right;
-        q->right = n;
-        node_fix_height(n);
-        node_fix_height(q);
-        return q;
-    }
-
-    template<class T>
-    node<T> *set<T>::node_rotate_left(node<T> *n) {
-        node<T> *p = n->right;
-        n->right = p->left;
-        p->left = n;
-        node_fix_height(n);
-        node_fix_height(p);
-        return p;
-    }
-
-    template<class T>
-    node<T> *set<T>::node_balance(node<T> *n) {
-        node_fix_height(n);
-        if (node_balance_factor(n) == 2 && node_balance_factor(n->right) < 0) {
-            node_rotate_right(n->right);
-            node_rotate_left(n);
-        } else if (node_balance_factor(n) == 2 && node_balance_factor(n->right >= 0)) {
-            node_rotate_left(n);
-        } else if (node_balance_factor(n) == -2 && node_balance_factor(n->left) > 0) {
-            node_rotate_left(n->left);
-            node_rotate_right(n);
-        } else if (node_balance_factor(n) == -2 && node_balance_factor(n->left <= 0)) {
-            node_rotate_right(n);
-        }
-        return n;
-    }
+    return n;
+}
 
 }  // namespace tp
