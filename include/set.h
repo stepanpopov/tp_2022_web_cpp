@@ -9,38 +9,70 @@
 
 namespace tp {
 
-template <class T>
-struct node {
-    node() : key(T()) {}
-    node(cont T& key) : key(key) {}
+    template<class T>
+    struct node {
+        node() : key(T()) {}
 
-    T key;
-    Node* parent = nullptr;
-    Node* right = nullptr;
-    Node* left = nullptr;
-    // Node* _next = nullptr;
-    // Node* _prev = nullptr;
-};
+        node(const T &key) : key(key) {}
 
-template <class T>
+        T key;
+        size_t height = 1;
+        node *parent = nullptr;
+        node *right = nullptr;
+        node *left = nullptr;
+        // node* _next = nullptr;
+        // node* _prev = nullptr;
+    };
+
+    template<class T>
     class set {
     public:
         set();
 
+        set(const set<T> &s);
 
-        void insert(cont T& key);
-        void erase(cont T& key);
-        void get_size() const;
+        set<T> &operator=(const set<T> &s);
+
+        ~set();
+
+        void insert(const T &key);
+
+        void erase(const T &key);
+
+        size_t get_size() const;
+
         bool empty() const;
-    private:
-        node* node_insert(node* p, int k);
 
-        node<T>* root = nullptr;
-        Node* begin = nullptr;
-        Node* last = nullptr;
+    private:
+        node<T> *node_insert(node<T> *n, const T &key);
+
+        node<T> *node_find_min(node<T> *n);
+
+        node<T> *node_without_min(node<T> *n);
+
+        node<T> *node_remove(node<T> *n, const T &key);
+
+        size_t node_balance_factor(node<T> *n);
+
+        void node_fix_height(node<T> *n);
+
+        size_t node_height(node<T> *n);
+
+        node<T> *node_rotate_right(node<T> *n);
+
+        node<T> *node_rotate_left(node<T> *n);
+
+        node<T> *node_balance(node<T> *n);
+
+
+        node<T> *root = nullptr;
+        node<T> *begin = nullptr;
+        node<T> *last = nullptr;
 
         size_t size = 0;
     };
 
-    std::ostream &operator<<(std::ostream &os, const set<T> &s);
+    // std::ostream &operator<<(std::ostream &os, const set<T> &s);
 }  // namespace tp
+
+#include "set.impl"
