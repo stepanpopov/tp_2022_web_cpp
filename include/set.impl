@@ -2,10 +2,12 @@
 
 namespace tp {
     template<class T>
-    set<T>::set() : root_(nullptr),
-                    begin_(nullptr),
-                    end_(new node<T>),
-                    size_(0) {}
+    set<T>::set() : root_(nullptr),   // TODO correct empty
+                    end_(new node <T>),
+                    size_(0) {
+        begin_ = end_;
+        // std::cout << (begin_ == end_) << std::endl;
+    }
 
     template<class T>
     set<T>::set(const std::initializer_list<T> &init_list) : set() {
@@ -32,10 +34,14 @@ namespace tp {
 
     template<class T>
     set <T> &set<T>::operator=(const set <T> &s) {
+        if (this == &s) {
+            return *this;
+        }
+
         node_visit_and_delete(root_);
         root_ = nullptr;
-        begin_ = nullptr;
         end_->prev = nullptr;
+        begin_ = end_;
 
         node_visit_and_copy(root_, s.root_);
         tie_linked_list();
@@ -137,14 +143,13 @@ namespace tp {
         if (n == nullptr) {
             return false;
         }
-        if (n->key == key) {
-            return true;
-        }
 
-        if (n->key > key) {
+        if (key < n->key) {
             return node_find(n->left, key);
-        } else {
+        } else if (n->key < key) {
             return node_find(n->right, key);
+        } else {
+            return true;
         }
     }
 
@@ -154,7 +159,7 @@ namespace tp {
             return new node<T>(key);
         }
 
-        if (n->key > key) {
+        if (key < n->key) {
             n->left = node_insert(n->left, key);
         } else if (n->key < key) {
             n->right = node_insert(n->right, key);
@@ -185,11 +190,11 @@ namespace tp {
         if (n == nullptr) {
             return nullptr;
         }
-        if (n->key > key) {
+        if (key < n->key) {
             n->left = node_remove(n->left, key);
         } else if (n->key < key) {
             n->right = node_remove(n->right, key);
-        } else if (n->key == key) {
+        } else {
             node<T> *node_left = n->left;
             node<T> *node_right = n->right;
             delete n;

@@ -222,7 +222,7 @@ void check_erase() {
 void run_all() {
     // check_constness();
     check_empty();
-    check_operator_less();
+    // check_operator_less();
     check_iterators();
     check_erase();
     check_copy_correctness();
