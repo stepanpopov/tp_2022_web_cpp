@@ -23,7 +23,19 @@ int main() {
     s.insert('f');
     s.insert('g');
 
-    std::cout << s;
+    tp::set<char> s1;
+    s1.insert('p');
+    s1 = s;
+    s1.insert('p');
+    std::cout << s1;
+
+    std::cout << std::endl;
+    for(auto it = s1.begin(); it != s1.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+
+    // std::cout << s1;
     /*for(int i = 1; i < 6; ++i) {
         s.insert(i);
     }

@@ -11,7 +11,7 @@ SET(SANITIZE_FLAGS "-fsanitize=address,undefined \
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra ${SANITIZE_FLAGS}")
 
-add_executable(set.out ./src/main.cpp)  # ./src/test_set.cpp
+add_executable(set.out ./src/test_set.cpp)  # ./src/test_set.cpp
 # add_executable(set.out ./src/test_set.cpp)
 
 # enable_testing()

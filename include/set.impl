@@ -2,10 +2,10 @@
 
 namespace tp {
     template<class T>
-    set<T>::set() : root(nullptr),
-                    begin(nullptr),
-                    last(nullptr),
-                    size(0) {}
+    set<T>::set() : root_(nullptr),
+                    begin_(nullptr),
+                    end_(new node<T>),
+                    size_(0) {}
 
     template<class T>
     set<T>::set(const std::initializer_list<T> &init_list) : set() {
@@ -24,41 +24,47 @@ namespace tp {
     }
 
     template<class T>
-    set<T>::set(const set <T> &s) {
-        (*this) = s;
+    set<T>::set(const set <T> &s) : set() {
+        node_visit_and_copy(root_, s.root_);
+        tie_linked_list();
+        size_ = s.size_;
     }
 
     template<class T>
     set <T> &set<T>::operator=(const set <T> &s) {
-        root = nullptr;
-        begin = nullptr;
-        last = nullptr;
-        node_visit_and_copy(root, s.root);
-        size = s.size;
+        node_visit_and_delete(root_);
+        root_ = nullptr;
+        begin_ = nullptr;
+        end_->prev = nullptr;
+
+        node_visit_and_copy(root_, s.root_);
+        tie_linked_list();
+        size_ = s.size_;
 
         return *this;
     }
 
     template<class T>
     set<T>::~set() {
-        node_visit_and_delete(root);
+        delete end_;
+        node_visit_and_delete(root_);
     }
 
 // SET METHODS
     template<class T>
     void set<T>::insert(const T &key) {
-        if (!node_find(root, key)) {
-            root = node_insert(root, key);
-            size++;
+        if (!node_find(root_, key)) {
+            root_ = node_insert(root_, key);
+            size_++;
             tie_linked_list();
         }
     }
 
     template<class T>
     void set<T>::erase(const T &key) {
-        if (node_find(root, key)) {
-            root = node_remove(root, key);
-            size--;
+        if (node_find(root_, key)) {
+            root_ = node_remove(root_, key);
+            size_--;
             tie_linked_list();
         }
     }
@@ -66,8 +72,7 @@ namespace tp {
     template<class T>
     void set<T>::tie_linked_list() {
         node<T> *node_prev = nullptr;
-        linked_list_tier(root, node_prev);
-        // last = ordered_nodes.back();  // TODO !!!
+        linked_list_tier(root_, node_prev);
     }
 
     template<class T>
@@ -79,26 +84,27 @@ namespace tp {
         linked_list_tier(n->left, node_prev);
 
         if (node_prev == nullptr) {
-            begin = n;
+            begin_ = n;
             n->prev = nullptr;
         } else {
             node_prev->next = n;
             n->prev = node_prev;
         }
-        n->next = nullptr;  // last can be here
+        n->next = end_;  // end ties here
+        end_->prev = n;
         node_prev = n;
 
         linked_list_tier(n->right, node_prev);
     }
 
     template<class T>
-    size_t set<T>::get_size() const {
-        return size;
+    size_t set<T>::size() const {
+        return size_;
     }
 
     template<class T>
     bool set<T>::empty() const {
-        return (size == 0);
+        return (size_ == 0);
     }
 
 

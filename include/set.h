@@ -1,11 +1,6 @@
 #pragma once // NOLINT
 
-// #include <functional>
-// #include <limits>
 #include <vector>  // out
-#include <string>
-// #include <initializer_list>
-// #include <iomanip>
 #include <iostream>
 
 namespace tp {
@@ -16,13 +11,17 @@ namespace tp {
 
         node(const T &key) : key(key) {}
 
+        /*bool operator<(const node &n) {  // TODO operators for iterator
+            return key < n.key;
+        }*/
+
         T key;
         size_t height = 1;
-        node *parent = nullptr;
-        node *right = nullptr;
+        // node *parent = nullptr;
+        node *right = nullptr;  // FOR AVL TREE
         node *left = nullptr;
 
-        node *next = nullptr;
+        node *next = nullptr;  // FOR LINKED LIST
         node *prev = nullptr;
     };
 
@@ -46,21 +45,36 @@ namespace tp {
 
         void erase(const T &key);
 
+        class iterator;
+
+        iterator find(const T &key) const {
+            T t = key;
+            return iterator(end_);
+        }
+
+        iterator lower_bound(const T &key) const {
+            T t = key;
+            return iterator(begin_);
+        }
+
         void tie_linked_list();
 
         void linked_list_tier(node<T> *n,
                               node<T> *&node_prev);
 
-        size_t get_size() const;
+        size_t size() const;
 
         bool empty() const;
 
         friend
         std::ostream &operator<<(std::ostream &out, const set<T> &s) {
-            out << "size : " << s.size << std::endl;
+            out << "size : " << s.size_ << std::endl;
+            out << "end->key : ";
+            if (s.end_ == nullptr) out << "null" << std::endl;
+            else out << (s.end_)->key << std::endl;
 
-            node<T> *it = s.begin;
-            while (it != nullptr) {
+            node<T> *it = s.begin_;
+            while (it->next != nullptr) {
                 out << it->key << " ";
                 it = it->next;
             }
@@ -75,7 +89,7 @@ namespace tp {
             return out;
         }
 
-        /*class iterator {
+        class iterator {
         public:
             using difference_type = ptrdiff_t;
             using value_type = T;
@@ -83,48 +97,60 @@ namespace tp {
             using reference = const T &;
             using iterator_category = std::bidirectional_iterator_tag;
 
-            iterator(T *cur) : cur(cur) {};
+            iterator(node<T> *n) : cur(n) {};
 
-            iterator();
+            iterator() : cur(nullptr) {};
 
-            iterator(const iterator &other)
+            iterator(const iterator &other) = default;
 
-            iterator &operator=(const iterator &other);
+            iterator &operator=(const iterator &other) = default;
 
-            T &operator*() const;
+            const T &operator*() const { return cur->key; }
 
-            T *operator->() const;
+            const T *operator->() const { return &(cur->key); }
 
-            bool operator==(const iterator &other) const;
+            bool operator==(const iterator &other) const {
+                return (cur == other.cur);
+            }
 
-            bool operator!=(const iterator &o) const;
+            bool operator!=(const iterator &other) const {
+                return (cur != other.cur);
+            }
 
-            iterator &operator++();
+            iterator &operator++() {cur = cur->next; return *this;}
 
-            iterator operator++(int);
+            iterator operator++(int) {
+                node<T> *temp = cur;
+                cur = cur->next;
+                return temp;
+            }
 
-            iterator &operator--();
+            iterator &operator--() {cur = cur->prev; return *this; }
 
-            iterator operator--(int);
+            iterator operator--(int) {
+                node<T> *temp = cur;
+                cur = cur->prev;
+                return temp;
+            }
 
         private:
-            T *cur;
+            node<T> *cur;
         };
-        friend iterator;
+        // friend iterator;
 
-        iterator begin() { return iterator() };
+        iterator begin() const { return iterator(begin_); }
 
-        iterator end() { return iterator() };*/
+        iterator end() const { return iterator(end_); }
 
     private:
-        void vector_from_set_dfs_preorder(node<T> *n, std::vector<T> &v) const {
+        /*void vector_from_set_dfs_preorder(node<T> *n, std::vector<T> &v) const {
             if (n == nullptr) {
                 return;
             }
             vector_from_set_dfs_preorder(n->left, v);
             v.push_back(n->key);
             vector_from_set_dfs_preorder(n->right, v);
-        }
+        }*/
 
         void node_visit_and_delete(node<T> *n);
 
@@ -153,11 +179,11 @@ namespace tp {
         node<T> *node_balance(node<T> *n);
 
 
-        node<T> *root = nullptr;
-        node<T> *begin = nullptr;
-        node<T> *last = nullptr;
+        node<T> *root_;  // = nullptr;
+        node<T> *begin_;  // = nullptr;
+        node<T> *end_;  // = nullptr;
 
-        size_t size = 0;
+        size_t size_ = 0;
     };
 }  // namespace tp
 
