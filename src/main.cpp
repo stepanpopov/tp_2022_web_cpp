@@ -1,12 +1,19 @@
 #include <iostream>
+#include <vector>
 #include "set.h"
 
-using namespace std;
+// using namespace std;
 
 int main() {
-    tp::set<char> s;
+    // std::vector<int> v{1, 2, 3, 4, 5};
+    // tp::set<int> s(v.begin(), v.end());
+
+    // tp::set<int> s(v.begin(), v.end());
+    //v[0] = 1000;
+    // tp::set<int> s(&v[0], &v[0] + 4);
     // cout << s;
     // char a = 'a';
+    tp::set<char> s;
     s.insert('a');
     s.insert('b');
     s.insert('c');
@@ -16,7 +23,7 @@ int main() {
     s.insert('f');
     s.insert('g');
 
-    cout << s;
+    std::cout << s;
     /*for(int i = 1; i < 6; ++i) {
         s.insert(i);
     }
