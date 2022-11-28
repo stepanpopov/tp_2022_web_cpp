@@ -5,35 +5,35 @@
 namespace tp {
 
     template<class T>
-    struct node {
-        node() : key(T()) {}
+    struct Node {
+        Node() : key(T()) {}
 
-        node(const T &key) : key(key) {}
+        Node(const T &key) : key(key) {}
 
         T key;
         size_t height = 1;
-        node *right = nullptr;  // FOR AVL TREE
-        node *left = nullptr;
+        Node *right = nullptr;  // FOR AVL TREE
+        Node *left = nullptr;
 
-        node *next = nullptr;  // FOR LINKED LIST
-        node *prev = nullptr;
+        Node *next = nullptr;  // FOR LINKED LIST
+        Node *prev = nullptr;
     };
 
     template<class T>
-    class set {
+    class Set {
     public:
-        set();
+        Set();
 
         template<class InputIterator>
-        constexpr set(const InputIterator it_first, const InputIterator it_last);
+        constexpr Set(const InputIterator it_first, const InputIterator it_last);
 
-        set(const std::initializer_list<T> &init_list);
+        Set(const std::initializer_list<T> &init_list);
 
-        set(const set<T> &s);
+        Set(const Set<T> &s);
 
-        set<T> &operator=(const set<T> &s);
+        Set<T> &operator=(const Set<T> &s);
 
-        ~set();
+        ~Set();
 
         void insert(const T &key);
 
@@ -50,14 +50,16 @@ namespace tp {
         bool empty() const;
 
         friend
-        std::ostream &operator<<(std::ostream &out, const set<T> &s) {
+        std::ostream &operator<<(std::ostream &out, const Set<T> &s) {
             out << "size : " << s.size_ << std::endl;
             out << "end->key : ";
             if (s.end_ == nullptr) out << "null" << std::endl;
             else out << (s.end_)->key << std::endl;
-            out << "root : " << s.root_->key << std::endl;
+            out << "root : ";
+            if (s.root_ == nullptr) out << "null" << std::endl;
+            else out << (s.root_)->key << std::endl;
 
-            node<T> *it = s.begin_;
+            Node<T> *it = s.begin_;
             while (it->next != nullptr) {
                 out << it->key << " ";
                 it = it->next;
@@ -75,7 +77,7 @@ namespace tp {
             using reference = const T &;
             using iterator_category = std::bidirectional_iterator_tag;
 
-            iterator(node<T> *n) : cur(n) {};
+            iterator(Node<T> *n) : cur(n) {};
 
             iterator() : cur(nullptr) {};
 
@@ -95,24 +97,30 @@ namespace tp {
                 return (cur != other.cur);
             }
 
-            iterator &operator++() {cur = cur->next; return *this;}
+            iterator &operator++() {
+                cur = cur->next;
+                return *this;
+            }
 
             iterator operator++(int) {
-                node<T> *temp = cur;
+                Node<T> *temp = cur;
                 cur = cur->next;
                 return temp;
             }
 
-            iterator &operator--() {cur = cur->prev; return *this; }
+            iterator &operator--() {
+                cur = cur->prev;
+                return *this;
+            }
 
             iterator operator--(int) {
-                node<T> *temp = cur;
+                Node<T> *temp = cur;
                 cur = cur->prev;
                 return temp;
             }
 
         private:
-            node<T> *cur;
+            Node<T> *cur;
         };
 
         iterator begin() const { return iterator(begin_); }
@@ -122,41 +130,41 @@ namespace tp {
     private:
         void tie_linked_list();
 
-        void linked_list_tier(node<T> *n,
-                              node<T> *&node_prev);
+        void linked_list_tier(Node<T> *n,
+                              Node<T> *&node_prev);
 
-        void node_visit_and_delete(node<T> *n);
+        void node_visit_and_delete(Node<T> *n);
 
-        void node_visit_and_copy(node<T> *&n, node<T> *copy_node);
+        void node_visit_and_copy(Node<T> *&n, Node<T> *copy_node);
 
-        node<T> *node_lower_bound(node<T> *n, const T &key) const;
+        Node<T> *node_lower_bound(Node<T> *n, const T &key) const;
 
-        node<T> *node_find(node<T> *n, const T &key) const;
+        Node<T> *node_find(Node<T> *n, const T &key) const;
 
-        node<T> *node_insert(node<T> *n, const T &key);
+        Node<T> *node_insert(Node<T> *n, const T &key);
 
-        node<T> *node_find_min(node<T> *n) const;
+        Node<T> *node_find_min(Node<T> *n) const;
 
-        node<T> *node_without_min(node<T> *n);
+        Node<T> *node_without_min(Node<T> *n);
 
-        node<T> *node_remove(node<T> *n, const T &key);
+        Node<T> *node_remove(Node<T> *n, const T &key);
 
-        int node_balance_factor(node<T> *n) const;
+        int node_balance_factor(Node<T> *n) const;
 
-        void node_fix_height(node<T> *n);
+        void node_fix_height(Node<T> *n);
 
-        size_t node_height(node<T> *n) const;
+        size_t node_height(Node<T> *n) const;
 
-        node<T> *node_rotate_right(node<T> *n);
+        Node<T> *node_rotate_right(Node<T> *n);
 
-        node<T> *node_rotate_left(node<T> *n);
+        Node<T> *node_rotate_left(Node<T> *n);
 
-        node<T> *node_balance(node<T> *n);
+        Node<T> *node_balance(Node<T> *n);
 
 
-        node<T> *root_ = nullptr;
-        node<T> *begin_ = nullptr;
-        node<T> *end_ = nullptr;
+        Node<T> *root_ = nullptr;
+        Node<T> *begin_ = nullptr;
+        Node<T> *end_ = nullptr;
 
         size_t size_ = 0;
     };

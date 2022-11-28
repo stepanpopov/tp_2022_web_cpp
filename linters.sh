@@ -19,13 +19,13 @@ function check_log() {
     fi
 }
 
-#print_header "RUN cppcheck"
-#check_log "cppcheck src --enable=all --inconclusive --error-exitcode=1 -I include --suppress=missingIncludeSystem" "\(information\)"
+print_header "RUN cppcheck"
+cppcheck src --enable=all --inconclusive --error-exitcode=1 -I include --suppress=missingIncludeSystem
 
 print_header "RUN clang-tidy"
-check_log "clang-tidy src/* include/* -warnings-as-errors=* -- -x c++ -Iinclude" "Error (?:reading|while processing)"
+clang-tidy src/* include/* -warnings-as-errors=* -- -x c++ -Iinclude
 
 print_header "RUN cpplint"
-check_log "cpplint --extensions=cpp src/*" "Can't open for reading"
+cpplint --extensions=cpp src/*
 
 print_header "SUCCESS"
