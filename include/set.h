@@ -1,6 +1,5 @@
 #pragma once // NOLINT
 
-#include <vector>  // out
 #include <iostream>
 
 namespace tp {
@@ -11,13 +10,8 @@ namespace tp {
 
         node(const T &key) : key(key) {}
 
-        /*bool operator<(const node &n) {  // TODO operators for iterator
-            return key < n.key;
-        }*/
-
         T key;
         size_t height = 1;
-        // node *parent = nullptr;
         node *right = nullptr;  // FOR AVL TREE
         node *left = nullptr;
 
@@ -30,8 +24,8 @@ namespace tp {
     public:
         set();
 
-        template<class Input_iterator>
-        constexpr set(const Input_iterator it_first, const Input_iterator it_last);
+        template<class InputIterator>
+        constexpr set(const InputIterator it_first, const InputIterator it_last);
 
         set(const std::initializer_list<T> &init_list);
 
@@ -45,22 +39,11 @@ namespace tp {
 
         void erase(const T &key);
 
-        class iterator;
+        class iterator;  // implemented lower
 
-        iterator find(const T &key) const {
-            T t = key;
-            return iterator(end_);
-        }
+        iterator find(const T &key) const;
 
-        iterator lower_bound(const T &key) const {
-            T t = key;
-            return iterator(begin_);
-        }
-
-        void tie_linked_list();
-
-        void linked_list_tier(node<T> *n,
-                              node<T> *&node_prev);
+        iterator lower_bound(const T &key) const;
 
         size_t size() const;
 
@@ -72,19 +55,14 @@ namespace tp {
             out << "end->key : ";
             if (s.end_ == nullptr) out << "null" << std::endl;
             else out << (s.end_)->key << std::endl;
+            out << "root : " << s.root_->key << std::endl;
 
             node<T> *it = s.begin_;
             while (it->next != nullptr) {
                 out << it->key << " ";
                 it = it->next;
             }
-            /*if (s.root != nullptr)
-                out << "root_key : " << s.root->key << std::endl;
-            std::vector<T> vec;
-            s.vector_from_set_dfs_preorder(s.root, vec);
-            for (auto it: vec) {
-                out << it << " ";
-            }*/
+
             out << std::endl;
             return out;
         }
@@ -136,27 +114,24 @@ namespace tp {
         private:
             node<T> *cur;
         };
-        // friend iterator;
 
         iterator begin() const { return iterator(begin_); }
 
         iterator end() const { return iterator(end_); }
 
     private:
-        /*void vector_from_set_dfs_preorder(node<T> *n, std::vector<T> &v) const {
-            if (n == nullptr) {
-                return;
-            }
-            vector_from_set_dfs_preorder(n->left, v);
-            v.push_back(n->key);
-            vector_from_set_dfs_preorder(n->right, v);
-        }*/
+        void tie_linked_list();
+
+        void linked_list_tier(node<T> *n,
+                              node<T> *&node_prev);
 
         void node_visit_and_delete(node<T> *n);
 
         void node_visit_and_copy(node<T> *&n, node<T> *copy_node);
 
-        bool node_find(node<T> *n, const T &key) const;
+        node<T> *node_lower_bound(node<T> *n, const T &key) const;
+
+        node<T> *node_find(node<T> *n, const T &key) const;
 
         node<T> *node_insert(node<T> *n, const T &key);
 
@@ -179,12 +154,12 @@ namespace tp {
         node<T> *node_balance(node<T> *n);
 
 
-        node<T> *root_;  // = nullptr;
-        node<T> *begin_;  // = nullptr;
-        node<T> *end_;  // = nullptr;
+        node<T> *root_ = nullptr;
+        node<T> *begin_ = nullptr;
+        node<T> *end_ = nullptr;
 
         size_t size_ = 0;
     };
 }  // namespace tp
 
-#include "set.impl"
+#include "set.cpp"

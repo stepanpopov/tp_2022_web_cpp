@@ -6,7 +6,6 @@ namespace tp {
                     end_(new node <T>),
                     size_(0) {
         begin_ = end_;
-        // std::cout << (begin_ == end_) << std::endl;
     }
 
     template<class T>
@@ -18,9 +17,9 @@ namespace tp {
     }
 
     template<class T>
-    template<class Input_iterator>
-    constexpr set<T>::set(const Input_iterator it_first, const Input_iterator it_last) : set() {
-        for (Input_iterator it = it_first; it != it_last; std::advance(it, 1)) {
+    template<class InputIterator>
+    constexpr set<T>::set(const InputIterator it_first, const InputIterator it_last) : set() {
+        for (InputIterator it = it_first; it != it_last; std::advance(it, 1)) {
             insert(*it);
         }
     }
@@ -76,6 +75,34 @@ namespace tp {
     }
 
     template<class T>
+    typename set<T>::iterator set<T>::find(const T &key) const {
+        node<T> *node_element = node_find(root_, key);
+        if (node_element) {
+            return iterator(node_element);
+        } else return end();
+    }
+
+    template<class T>
+    typename set<T>::iterator set<T>::lower_bound(const T &key) const {
+        node<T> *node_element = node_lower_bound(root_, key);
+        if (node_element->key < key) {
+            return iterator(node_element->next);
+        } else {
+            return iterator(node_element);
+        }
+    }
+
+    template<class T>
+    size_t set<T>::size() const {
+        return size_;
+    }
+
+    template<class T>
+    bool set<T>::empty() const {
+        return (size_ == 0);
+    }
+
+    template<class T>
     void set<T>::tie_linked_list() {
         node<T> *node_prev = nullptr;
         linked_list_tier(root_, node_prev);
@@ -101,16 +128,6 @@ namespace tp {
         node_prev = n;
 
         linked_list_tier(n->right, node_prev);
-    }
-
-    template<class T>
-    size_t set<T>::size() const {
-        return size_;
-    }
-
-    template<class T>
-    bool set<T>::empty() const {
-        return (size_ == 0);
     }
 
 
@@ -139,9 +156,26 @@ namespace tp {
     }
 
     template<class T>
-    bool set<T>::node_find(node <T> *n, const T &key) const {
+    node<T> *set<T>::node_lower_bound(node<T> *n, const T &key) const {
+        if (key < n->key) {
+            if (n->left == nullptr) {
+                return n;
+            }
+            return node_lower_bound(n->left, key);
+        } else if (n->key < key) {
+            if (n->right == nullptr) {
+                return n;
+            }
+            return node_lower_bound(n->right, key);
+        } else {
+            return n;
+        }
+    }
+
+    template<class T>
+    node<T> *set<T>::node_find(node <T> *n, const T &key) const {
         if (n == nullptr) {
-            return false;
+            return nullptr;
         }
 
         if (key < n->key) {
@@ -149,7 +183,7 @@ namespace tp {
         } else if (n->key < key) {
             return node_find(n->right, key);
         } else {
-            return true;
+            return n;
         }
     }
 

@@ -13,27 +13,19 @@ int main() {
     // tp::set<int> s(&v[0], &v[0] + 4);
     // cout << s;
     // char a = 'a';
-    tp::set<char> s;
-    s.insert('a');
-    s.insert('b');
-    s.insert('c');
-    s.insert('d');
-    s.insert('e');
-    s.insert('h');
-    s.insert('f');
-    s.insert('g');
+    tp::set<int> s;
+    s.insert(1);
+    s.insert(3);
+    s.insert(4);
+    s.insert(5);
+    s.insert(8);
+    s.insert(10);
+    s.insert(11);
+    s.insert(12);
+    // s.insert(2);
 
-    tp::set<char> s1;
-    s1.insert('p');
-    s1 = s;
-    s1.insert('p');
-    std::cout << s1;
-
-    std::cout << std::endl;
-    for(auto it = s1.begin(); it != s1.end(); ++it) {
-        std::cout << *it << " ";
-    }
-    std::cout << std::endl;
+    std::cout << s;
+    std::cout << *(s.lower_bound(13)) << std::endl;
 
     // std::cout << s1;
     /*for(int i = 1; i < 6; ++i) {
