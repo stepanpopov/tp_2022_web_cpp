@@ -52,11 +52,6 @@ public:
             stl_set.insert(init_elements[i]);
         }
     }
-
-    void TearDown() override {
-
-    }
-
     tp::Set<int> my_set;
     std::set<int> stl_set;
 
@@ -65,8 +60,20 @@ public:
     static const size_t START_SIZE = 1000000;
 };
 
+TEST_F(TestComparingWithStl, check_equal_test) {
+    auto it1 = my_set.begin();
+    auto it2 = stl_set.begin();
+    size_t counter = 0;
+    for (; it1 != my_set.end() && it2 != stl_set.end();
+           ++it1, ++it2) {
+        counter++;
+        ASSERT_EQ(*it1, *it2);
+    }
+    ASSERT_EQ(counter, stl_set.size());
+}
+
 TEST_F(TestComparingWithStl, erase_test) {
-    for (size_t i = 0; i < START_SIZE; ++i) {
+    for (size_t i = 0; i < START_SIZE; i+=2) {
         my_set.erase(init_elements[i]);
         stl_set.erase(init_elements[i]);
     }
@@ -79,11 +86,32 @@ TEST_F(TestComparingWithStl, erase_test) {
     }
 }
 
+TEST_F(TestComparingWithStl, full_erase_test) {
+    for (size_t i = 0; i < START_SIZE; i++) {
+        my_set.erase(init_elements[i]);
+        stl_set.erase(init_elements[i]);
+    }
+
+    ASSERT_EQ(my_set.empty(), true);
+    ASSERT_EQ(stl_set.empty(), true);
+}
+
 TEST_F(TestComparingWithStl, find_test) {
     for (size_t i = 0; i < START_SIZE; ++i) {
 
         auto it1_found = my_set.find(init_elements[i]);
         auto it2_found = stl_set.find(init_elements[i]);
+
+        ASSERT_TRUE((it1_found == my_set.end() && it2_found == stl_set.end()) ||
+                    (*it1_found == *it2_found));
+    }
+}
+
+TEST_F(TestComparingWithStl, lower_bound_test) {
+    for (size_t i = 0; i < START_SIZE; ++i) {
+
+        auto it1_found = my_set.lower_bound(init_elements[i]);
+        auto it2_found = stl_set.lower_bound(init_elements[i]);
 
         ASSERT_TRUE((it1_found == my_set.end() && it2_found == stl_set.end()) ||
                     (*it1_found == *it2_found));

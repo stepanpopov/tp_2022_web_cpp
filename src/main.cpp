@@ -3,10 +3,10 @@
 
 int main() {
     tp::Set<int> s;
-    for(int i = 1; i < 10; ++i) {
+    for (int i = 1; i < 10; ++i) {
         s.insert(i);
     }
-    for(int i = 1; i < 10; ++i) {
+    for (int i = 1; i < 10; ++i) {
         s.erase(i);
     }
 

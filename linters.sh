@@ -22,10 +22,8 @@ function check_log() {
 print_header "RUN cppcheck"
 cppcheck src --enable=all --inconclusive --error-exitcode=1 -I include --suppress=missingIncludeSystem
 
-print_header "RUN clang-tidy"
-clang-tidy src/* include/* -warnings-as-errors=* -- -x c++ -Iinclude
 
 print_header "RUN cpplint"
-cpplint --extensions=cpp src/*
+cpplint --extensions=cpp src/* include/*
 
 print_header "SUCCESS"
