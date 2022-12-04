@@ -26,6 +26,6 @@ jobs:
           bash build.sh
           bash test.sh
       - name: Upload artifacts
-          uses: actions/upload-artifact@v2
-          with:
-            path: report
+        uses: actions/upload-artifact@v2
+        with:
+          path: report
